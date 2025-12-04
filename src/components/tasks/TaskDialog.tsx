@@ -45,8 +45,8 @@ export default function TaskDialog({
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<TaskPriority>('medium');
   const [status, setStatus] = useState<TaskStatus>('pending');
-  const [projectId, setProjectId] = useState<string>('');
-  const [assignedTo, setAssignedTo] = useState<string>('');
+  const [projectId, setProjectId] = useState<string>('none');
+  const [assignedTo, setAssignedTo] = useState<string>('none');
   const [dueDate, setDueDate] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -56,16 +56,16 @@ export default function TaskDialog({
       setDescription(task.description || '');
       setPriority(task.priority);
       setStatus(task.status);
-      setProjectId(task.project_id || '');
-      setAssignedTo(task.assigned_to || '');
+      setProjectId(task.project_id || 'none');
+      setAssignedTo(task.assigned_to || 'none');
       setDueDate(task.due_date ? format(new Date(task.due_date), 'yyyy-MM-dd') : '');
     } else {
       setTitle('');
       setDescription('');
       setPriority('medium');
       setStatus('pending');
-      setProjectId('');
-      setAssignedTo('');
+      setProjectId('none');
+      setAssignedTo('none');
       setDueDate('');
     }
   }, [task, open]);
@@ -81,8 +81,8 @@ export default function TaskDialog({
         description: description.trim() || null,
         priority,
         status,
-        project_id: projectId || null,
-        assigned_to: assignedTo || null,
+        project_id: projectId === 'none' ? null : projectId,
+        assigned_to: assignedTo === 'none' ? null : assignedTo,
         due_date: dueDate ? new Date(dueDate).toISOString() : null,
       });
       onOpenChange(false);
@@ -179,7 +179,7 @@ export default function TaskDialog({
                 <SelectValue placeholder="Select project" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">No project</SelectItem>
+                <SelectItem value="none">No project</SelectItem>
                 {projects.map((project) => (
                   <SelectItem key={project.id} value={project.id}>
                     <span className="flex items-center gap-2">
@@ -199,7 +199,7 @@ export default function TaskDialog({
                 <SelectValue placeholder="Select user" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Unassigned</SelectItem>
+                <SelectItem value="none">Unassigned</SelectItem>
                 {users.map((user) => (
                   <SelectItem key={user.id} value={user.id}>
                     <span className="flex items-center gap-2">
