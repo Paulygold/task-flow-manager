@@ -1,3 +1,12 @@
+/**
+ * AppLayout.tsx - Main Application Layout
+ * 
+ * Provides the consistent layout for all authenticated pages:
+ * - Sticky header with logo, navigation, and user menu
+ * - Responsive navigation (desktop in header, mobile below)
+ * - User dropdown with profile info and sign out
+ */
+
 import { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,14 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  CheckSquare,
-  LayoutDashboard,
-  FolderKanban,
-  Users,
-  LogOut,
-  Settings
-} from 'lucide-react';
+import { CheckSquare, LayoutDashboard, FolderKanban, Users, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AppLayoutProps {
@@ -26,28 +28,22 @@ interface AppLayoutProps {
 }
 
 export default function AppLayout({ children }: AppLayoutProps) {
-  const { profile, role, signOut, isAdmin, isDepartmentHead } = useAuth();
+  const { profile, signOut, isAdmin, isDepartmentHead } = useAuth();
   const location = useLocation();
 
+  // Navigation items - User Management only visible to admins
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Projects', href: '/projects', icon: FolderKanban },
+    ...(isAdmin ? [{ name: 'User Management', href: '/users', icon: Users }] : []),
   ];
 
-  if (isAdmin) {
-    navigation.push({ name: 'User Management', href: '/users', icon: Users });
-  }
+  /** Get initials from full name (e.g., "John Doe" -> "JD") */
+  const getInitials = (name: string) => 
+    name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const getRoleBadge = () => {
+  /** Get human-readable role label */
+  const getRoleLabel = () => {
     if (isAdmin) return 'Admin';
     if (isDepartmentHead) return 'Department Head';
     return 'Employee';
@@ -55,9 +51,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
+      {/* Sticky Header */}
       <header className="sticky top-0 z-50 border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
         <div className="flex h-16 items-center justify-between px-4 md:px-6">
+          {/* Logo and Desktop Navigation */}
           <div className="flex items-center gap-6">
             <Link to="/dashboard" className="flex items-center gap-2">
               <div className="p-1.5 bg-primary rounded-lg">
@@ -66,20 +63,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
               <span className="font-semibold text-lg hidden sm:inline">TaskFlow</span>
             </Link>
             
+            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-1">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.href;
                 return (
                   <Link key={item.name} to={item.href}>
-                    <Button
-                      variant={isActive ? 'secondary' : 'ghost'}
-                      size="sm"
-                      className={cn(
-                        'gap-2',
-                        isActive && 'bg-secondary'
-                      )}
-                    >
+                    <Button variant={isActive ? 'secondary' : 'ghost'} size="sm" className="gap-2">
                       <Icon className="h-4 w-4" />
                       {item.name}
                     </Button>
@@ -89,6 +80,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </nav>
           </div>
 
+          {/* User Menu Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="gap-2 px-2">
@@ -99,7 +91,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 </Avatar>
                 <div className="hidden sm:flex flex-col items-start">
                   <span className="text-sm font-medium">{profile?.full_name}</span>
-                  <span className="text-xs text-muted-foreground">{getRoleBadge()}</span>
+                  <span className="text-xs text-muted-foreground">{getRoleLabel()}</span>
                 </div>
               </Button>
             </DropdownMenuTrigger>
@@ -107,9 +99,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
               <DropdownMenuLabel>
                 <div className="flex flex-col">
                   <span>{profile?.full_name}</span>
-                  <span className="text-xs font-normal text-muted-foreground">
-                    {profile?.email}
-                  </span>
+                  <span className="text-xs font-normal text-muted-foreground">{profile?.email}</span>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
@@ -121,18 +111,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
           </DropdownMenu>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - shown below header on small screens */}
         <nav className="md:hidden flex items-center gap-1 px-4 pb-3 overflow-x-auto">
           {navigation.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.href;
             return (
               <Link key={item.name} to={item.href}>
-                <Button
-                  variant={isActive ? 'secondary' : 'ghost'}
-                  size="sm"
-                  className={cn('gap-2 whitespace-nowrap', isActive && 'bg-secondary')}
-                >
+                <Button variant={isActive ? 'secondary' : 'ghost'} size="sm" className="gap-2 whitespace-nowrap">
                   <Icon className="h-4 w-4" />
                   {item.name}
                 </Button>
@@ -142,7 +128,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </nav>
       </header>
 
-      {/* Main Content */}
+      {/* Page Content */}
       <main className="p-4 md:p-6">{children}</main>
     </div>
   );
