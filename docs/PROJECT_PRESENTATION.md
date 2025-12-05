@@ -21,7 +21,7 @@ A web-based task management system for organizations with role-based access cont
 | Frontend | React 18 + TypeScript |
 | Styling | Tailwind CSS + Shadcn/UI |
 | State | React Context + TanStack Query |
-| Backend | Lovable Database (Supabase) |
+| Backend | PostgreSQL Database |
 | Database | PostgreSQL |
 | Auth | Supabase Auth |
 
@@ -48,7 +48,7 @@ A web-based task management system for organizations with role-based access cont
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    BACKEND (Lovable Database)               │
+│                    BACKEND (PostgreSQL)                     │
 ├─────────────────────────────────────────────────────────────┤
 │  Authentication  │  Database (PostgreSQL)  │  RLS Policies  │
 │  ├── Sign Up     │  ├── profiles           │  Role-based    │
@@ -335,7 +335,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                  LOVABLE CLOUD BACKEND                      │
+│                  CLOUD BACKEND                              │
 │                                                             │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
 │  │    Auth     │  │  Database   │  │ RLS Policies│         │
@@ -395,7 +395,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 ### Resources
 - **Documentation**: `/docs/` folder
 - **Source Code**: `src/` directory
-- **Database Schema**: Lovable Cloud dashboard
+- **Database Schema**: Cloud dashboard
 
 ### Contact
-Project maintained via Lovable platform.
+Project maintained by ChangeIT GmbH.
