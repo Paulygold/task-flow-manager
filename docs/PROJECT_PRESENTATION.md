@@ -21,7 +21,7 @@ A web-based task management system for organizations with role-based access cont
 | Frontend | React 18 + TypeScript |
 | Styling | Tailwind CSS + Shadcn/UI |
 | State | React Context + TanStack Query |
-| Backend | Lovable Cloud (Supabase) |
+| Backend | Lovable Database (Supabase) |
 | Database | PostgreSQL |
 | Auth | Supabase Auth |
 
@@ -48,7 +48,7 @@ A web-based task management system for organizations with role-based access cont
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                    BACKEND (Lovable Cloud)                  │
+│                    BACKEND (Lovable Database)               │
 ├─────────────────────────────────────────────────────────────┤
 │  Authentication  │  Database (PostgreSQL)  │  RLS Policies  │
 │  ├── Sign Up     │  ├── profiles           │  Role-based    │
